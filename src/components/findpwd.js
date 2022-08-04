@@ -1,14 +1,14 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import "../css/login.css";
-import {Button, Col, Form, Input, message, Modal, Row, Steps} from "antd";
-import {LeftOutlined, LockOutlined, UserOutlined} from "@ant-design/icons";
-import {NavLink, Route} from "react-router-dom";
+import { Button, Col, Form, Input, message, Modal, Row, Steps } from "antd";
+import { LeftOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
+import { NavLink, Route } from "react-router-dom";
 import axios from "axios";
-import {HOST, PORT} from "../config/apiconfig";
-import {BrowserRouter, Switch} from "react-router-dom";
+import { HOST, PORT } from "../config/apiconfig";
+import { BrowserRouter, Switch } from "react-router-dom";
 import Login from "./login";
 
-const {Step} = Steps;
+const { Step } = Steps;
 
 export const FindPwd = function (props) {
     const form1Ref = useRef();
@@ -19,19 +19,19 @@ export const FindPwd = function (props) {
 
     const next = async () => { // 验证身份
         await form1Ref.current.validateFields()
-            .then(value => { // value是验证成功控件的值：{username:"张三",name:"郑十"}
-                axios.post(`${HOST}:${PORT}/admins/test`, {user: value})
+            .then(value => { // value是验证成功控件的值
+                axios.post(`${HOST}:${PORT}/admins/test`, { user: value })
                     .then(result => {
                         if (result.data.status === 200) {
-                            setUser({username: value.username, name: value.name}); // 记录当前的用户名，用来改密码
+                            setUser({ username: value.username, name: value.name }); // 记录当前的用户名，用来改密码
                             message.success(result.data.msg); // 输出后端传来的信息
                             setCurrent(current + 1);
                         } else {
                             message.error(result.data.msg);
                         }
                     }).catch(err => {
-                    console.log(err);
-                })
+                        console.log(err);
+                    })
 
             })
     }
@@ -54,8 +54,8 @@ export const FindPwd = function (props) {
                             message.error(result.data.msg);
                         }
                     }).catch(err => {
-                    console.log(err);
-                })
+                        console.log(err);
+                    })
             })
     }
 
@@ -65,35 +65,39 @@ export const FindPwd = function (props) {
             content: function () { // 输入用户名和真实姓名
                 return (
                     <Form ref={form1Ref}>
-                        <Row>
+                        <Row style={{ height: "70px" }}>
                             <Col span={24}>
                                 <Form.Item name={"username"}
-                                           rules={[
-                                               {
-                                                   required: true,
-                                                   message: "用户名不能为空"
-                                               }
-                                           ]}>
-                                    <Input placeholder={"请输入用户名"}
-                                           style={{borderRadius: "24px", width: "300px"}}
-                                           prefix={<UserOutlined style={{color: 'rgba(0,0,0,0.25)'}}/>}
-                                           size={"large"}/>
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "电话号码不能为空"
+                                        },
+                                        {
+                                            pattern: /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/,
+                                            message: "请输入正确的电话号码"
+                                        }
+                                    ]}>
+                                    <Input placeholder={"请输入电话号码"}
+                                        style={{ borderRadius: "24px", width: "300px" }}
+                                        prefix={<UserOutlined style={{ color: 'rgba(0,0,0,0.25)' }} />}
+                                        size={"large"} />
                                 </Form.Item>
                             </Col>
                         </Row>
-                        <Row>
+                        <Row style={{ height: "70px" }}>
                             <Col span={24}>
                                 <Form.Item name={"name"}
-                                           rules={[
-                                               {
-                                                   required: true,
-                                                   message: "真实姓名不能为空"
-                                               }
-                                           ]}>
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "真实姓名不能为空"
+                                        }
+                                    ]}>
                                     <Input placeholder={"请输入真实姓名"}
-                                           size={"large"}
-                                           style={{borderRadius: "24px", width: "300px"}}
-                                           prefix={<UserOutlined style={{color: 'rgba(0,0,0,0.25)'}}/>}/>
+                                        size={"large"}
+                                        style={{ borderRadius: "24px", width: "300px" }}
+                                        prefix={<UserOutlined style={{ color: 'rgba(0,0,0,0.25)' }} />} />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -109,44 +113,48 @@ export const FindPwd = function (props) {
                         <Row>
                             <Col span={24}>
                                 <Form.Item name="password"
-                                           rules={[
-                                               {
-                                                   required: true,
-                                                   message: "新密码不能为空"
-                                               }
-                                           ]}>
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "新密码不能为空"
+                                        },
+                                        {
+                                            pattern:/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
+                                            message:"密码必须是包含字母和数字的8-16位密码"
+                                        }
+                                    ]}>
                                     <Input.Password
-                                        style={{borderRadius: "24px", width: "300px"}}
-                                        prefix={<LockOutlined style={{color: "rgba(0,0,0,0.25)"}}/>}
+                                        style={{ borderRadius: "24px", width: "300px" }}
+                                        prefix={<LockOutlined style={{ color: "rgba(0,0,0,0.25)" }} />}
                                         placeholder={"请输入新密码"}
-                                        size={"large"}/>
+                                        size={"large"} />
                                 </Form.Item>
                             </Col>
                         </Row>
                         <Row>
                             <Col span={24}>
                                 <Form.Item name="confirmPwd"
-                                           rules={[
-                                               {
-                                                   required: true,
-                                                   message: "请重新输入密码"
-                                               },
-                                               {
-                                                   validator: ((rule, value) => { // value表示当前控件的值
-                                                       let pwd = form2Ref.current.getFieldValue("password"); // 获取输入的密码
-                                                       if (pwd && pwd !== value) {
-                                                           return Promise.reject("两次密码输入不一致")
-                                                       } else {
-                                                           return Promise.resolve(); // 表示验证通过
-                                                       }
-                                                   })
-                                               }
-                                           ]}>
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "请确认密码"
+                                        },
+                                        {
+                                            validator: ((rule, value) => { // value表示当前控件的值
+                                                let pwd = form2Ref.current.getFieldValue("password"); // 获取输入的密码
+                                                if (pwd && pwd !== value) {
+                                                    return Promise.reject("两次密码输入不一致")
+                                                } else {
+                                                    return Promise.resolve(); // 表示验证通过
+                                                }
+                                            })
+                                        }
+                                    ]}>
                                     <Input.Password
-                                        style={{borderRadius: "24px", width: "300px"}}
-                                        prefix={<LockOutlined style={{color: "rgba(0,0,0,0.25)"}}/>}
+                                        style={{ borderRadius: "24px", width: "300px" }}
+                                        prefix={<LockOutlined style={{ color: "rgba(0,0,0,0.25)" }} />}
                                         placeholder={"请确认密码"}
-                                        size={"large"}/>
+                                        size={"large"} />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -165,11 +173,11 @@ export const FindPwd = function (props) {
             <div className={"loginPage"}>
                 <section className={"find-content"}>
                     <div className={"back"}>
-                        <Button type={"link"} style={{color: "#91A0B5", fontSize: "16px"}}
-                                onClick={() => back()}><LeftOutlined/>返回</Button>
+                        <Button type={"link"} style={{ color: "#91A0B5", fontSize: "16px" }}
+                            onClick={() => back()}><LeftOutlined />返回</Button>
                     </div>
-                    <h2 style={{padding: "10px 30px"}}>忘记密码</h2>
-                    <Steps current={current} style={{width: "300px", marginBottom: "30px"}}>
+                    <h2 style={{ padding: "10px 30px" }}>忘记密码</h2>
+                    <Steps current={current} style={{ width: "300px", marginBottom: "30px" }}>
                         {steps.map(item => (
                             <Step key={item.title} title={item.title}></Step>
                         ))}
@@ -177,12 +185,12 @@ export const FindPwd = function (props) {
                     <div className={"steps-content"}>{steps[current].content()}</div>
                     <div>
                         {current === 0 && (
-                            <Button type={"primary"} style={{width: "300px", borderRadius: "24px"}} size={"large"}
-                                    onClick={() => next()}>下一步</Button>
+                            <Button type={"primary"} style={{ width: "300px", borderRadius: "24px" }} size={"large"}
+                                onClick={() => next()}>下一步</Button>
                         )}
                         {current === 1 && (
-                            <Button type={"primary"} style={{width: "300px", borderRadius: "24px"}}
-                                    size={"large"} onClick={() => modify()}>修改密码</Button>
+                            <Button type={"primary"} style={{ width: "300px", borderRadius: "24px" }}
+                                size={"large"} onClick={() => modify()}>修改密码</Button>
                         )}
                     </div>
                 </section>
