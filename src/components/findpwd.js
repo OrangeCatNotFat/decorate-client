@@ -1,12 +1,10 @@
 import React, { useRef, useState } from "react";
 import "../css/login.css";
-import { Button, Col, Form, Input, message, Modal, Row, Steps } from "antd";
+import { Button, Col, Form, Input, message, Row, Steps } from "antd";
 import { LeftOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
-import { NavLink, Route } from "react-router-dom";
 import axios from "axios";
 import { HOST, PORT } from "../config/apiconfig";
-import { BrowserRouter, Switch } from "react-router-dom";
-import Login from "./login";
+import md5 from "js-md5";
 
 const { Step } = Steps;
 
@@ -41,12 +39,11 @@ export const FindPwd = function (props) {
             .then(value => { // value表示获取到的两个密码
                 axios.post(`${HOST}:${PORT}/admins/updatePwd`, {
                     user: user,
-                    password: value.password
+                    password: md5(value.password)
                 })
                     .then(result => {
                         if (result.data.status === 201) {
                             message.success(result.data.msg);
-                            sessionStorage.setItem("username", user.username);
                             setTimeout(() => {
                                 props.history.push("/"); // 路由跳转
                             }, 1000);
@@ -119,8 +116,8 @@ export const FindPwd = function (props) {
                                             message: "新密码不能为空"
                                         },
                                         {
-                                            pattern:/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
-                                            message:"密码必须是包含字母和数字的8-16位密码"
+                                            pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/,
+                                            message: "密码必须是包含字母和数字的8-16位密码"
                                         }
                                     ]}>
                                     <Input.Password
@@ -169,32 +166,30 @@ export const FindPwd = function (props) {
     }
 
     return (
-        <BrowserRouter>
-            <div className={"loginPage"}>
-                <section className={"find-content"}>
-                    <div className={"back"}>
-                        <Button type={"link"} style={{ color: "#91A0B5", fontSize: "16px" }}
-                            onClick={() => back()}><LeftOutlined />返回</Button>
-                    </div>
-                    <h2 style={{ padding: "10px 30px" }}>忘记密码</h2>
-                    <Steps current={current} style={{ width: "300px", marginBottom: "30px" }}>
-                        {steps.map(item => (
-                            <Step key={item.title} title={item.title}></Step>
-                        ))}
-                    </Steps>
-                    <div className={"steps-content"}>{steps[current].content()}</div>
-                    <div>
-                        {current === 0 && (
-                            <Button type={"primary"} style={{ width: "300px", borderRadius: "24px" }} size={"large"}
-                                onClick={() => next()}>下一步</Button>
-                        )}
-                        {current === 1 && (
-                            <Button type={"primary"} style={{ width: "300px", borderRadius: "24px" }}
-                                size={"large"} onClick={() => modify()}>修改密码</Button>
-                        )}
-                    </div>
-                </section>
-            </div>
-        </BrowserRouter>
+        <div className={"loginPage"}>
+            <section className={"find-content"}>
+                <div className={"back"}>
+                    <Button type={"link"} style={{ color: "#91A0B5", fontSize: "16px" }}
+                        onClick={() => back()}><LeftOutlined />返回</Button>
+                </div>
+                <h2 style={{ padding: "10px 30px" }}>忘记密码</h2>
+                <Steps current={current} style={{ width: "300px", marginBottom: "30px" }}>
+                    {steps.map(item => (
+                        <Step key={item.title} title={item.title}></Step>
+                    ))}
+                </Steps>
+                <div className={"steps-content"}>{steps[current].content()}</div>
+                <div>
+                    {current === 0 && (
+                        <Button type={"primary"} style={{ width: "300px", borderRadius: "24px" }} size={"large"}
+                            onClick={() => next()}>下一步</Button>
+                    )}
+                    {current === 1 && (
+                        <Button type={"primary"} style={{ width: "300px", borderRadius: "24px" }}
+                            size={"large"} onClick={() => modify()}>修改密码</Button>
+                    )}
+                </div>
+            </section>
+        </div>
     )
 }
