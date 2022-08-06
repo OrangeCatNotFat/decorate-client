@@ -6,17 +6,11 @@ import "../css/login.css";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import logo from '../logo.png';
-import { Findpwd } from "./findpwd";
-
-// import AdminInfo from "../state/adminInfo";
+import md5 from 'js-md5'; // 引入md5加密算法
 
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            username: " ",
-            password: " "
-        }
     }
 
     loginFormRef = React.createRef(); // 与render函数中的登录表单进行绑定
@@ -25,11 +19,8 @@ class Login extends React.Component {
         // 对表单控件进行规则验证，验证设置了rules属性的控件（Form.Item）
         await this.loginFormRef.current.validateFields()
             .then(value => { // 验证成功，value是验证成功的控件的值
-                this.setState({ // 设置当前状态为最新输入的值
-                    username: value.username,
-                    password: value.password
-                })
-                axios.post(`${HOST}:${PORT}/admins/login`, { user: value })
+                // value是对象，里面是表单的值
+                axios.post(`${HOST}:${PORT}/admins/login`, { user: { username: value.username, password: md5(value.password) } })
                     .then(result => {
                         if (result.data.status === 200) { // 登录成功
                             if (result.data.role === 2) {
@@ -94,7 +85,7 @@ class Login extends React.Component {
                                                 {
                                                     required: true,
                                                     message: '登录密码不能为空'
-                                                },
+                                                }
                                             ]}>
                                             <Input.Password
                                                 style={{ borderRadius: "24px" }}
