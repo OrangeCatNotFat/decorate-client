@@ -8,7 +8,7 @@ import {
     GiftOutlined,
     HomeOutlined, PictureOutlined, SettingOutlined, TagsOutlined, TeamOutlined
 } from "@ant-design/icons";
-import Case from "./case";
+import Case from "./case/index";
 import Home from "./home";
 import Cate from "./cate";
 import { Administrator } from "./administrator";
@@ -58,7 +58,9 @@ class Frame extends React.Component {
             <div style={{ color: "rgb(147,147,147)", fontSize: "18px", fontFamily: "微软雅黑" }}>
                 <SettingOutlined />&nbsp;&nbsp;企业信息管理</div>,
             <div style={{ color: "rgb(147,147,147)", fontSize: "18px", fontFamily: "微软雅黑" }}>
-                <TeamOutlined />&nbsp;&nbsp;管理员管理</div>
+                <TeamOutlined />&nbsp;&nbsp;管理员管理</div>,
+            <div style={{ color: "rgb(147,147,147)", fontSize: "18px", fontFamily: "微软雅黑" }}>
+                <PictureOutlined />&nbsp;&nbsp;案例管理</div>
         ]
 
         return (
@@ -90,7 +92,7 @@ class Frame extends React.Component {
                         style={{ backgroundColor: "white" }}>
                         {/* 侧边栏 */}
                         <Menu mode={"inline"} defaultSelectedKeys={["1"]} defaultOpenKeys={["1"]}
-                            style={{ height: "100%", borderRight: 0 }}
+                            style={{ borderRight: 0 }}
                             onClick={async key => { // 获取到点了哪个页面
                                 let action = {
                                     type: "switch_page",
@@ -141,7 +143,7 @@ class Frame extends React.Component {
                         </Menu>
                     </Sider>
                     <Layout style={{
-                        padding: "20px 24px 50px",
+                        padding: "20px 24px 0",
                         minHeight: "400px"
                     }}>
                         <div>{pageTitle[store.getState().key - 1]}</div>
