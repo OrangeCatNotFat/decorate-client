@@ -48,12 +48,6 @@ class Login extends React.Component {
             })
     }
 
-    componentDidMount() {
-        store.subscribe(() => {
-            store.getState();
-        })
-    }
-
     render() {
         return (
             <div className={"loginPage"}>
